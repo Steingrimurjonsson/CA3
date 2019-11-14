@@ -1,6 +1,7 @@
 package rest;
 
 import com.google.gson.Gson;
+import entities.Role;
 import entities.User;
 import java.util.List;
 import javax.annotation.security.RolesAllowed;
@@ -66,5 +67,39 @@ public class DemoResource {
     public String getFromAdmin() {
         String thisuser = securityContext.getUserPrincipal().getName();
         return "{\"msg\": \"Hello to (admin) User: " + thisuser + "\"}";
+    }
+    @GET
+    @Path("/populate")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String populate() {
+        EntityManagerFactory emf = EMF_Creator.createEntityManagerFactory(EMF_Creator.DbSelector.DEV, EMF_Creator.Strategy.CREATE);
+        EntityManager em = emf.createEntityManager();
+        try {
+         User user = new User("user", "1234");
+    User admin = new User("admin", "1234");
+    User both = new User("user_admin", "1234");
+    if(admin.getUserPass().equals("test")||user.getUserPass().equals("test")||both.getUserPass().equals("test"))
+      throw new UnsupportedOperationException("You have not changed the passwords");
+    em.getTransaction().begin();
+    Role userRole = new Role("user");
+    Role adminRole = new Role("admin");
+    user.addRole(userRole);
+    admin.addRole(adminRole);
+    both.addRole(userRole);
+    both.addRole(adminRole);
+    em.persist(userRole);
+    em.persist(adminRole);
+    em.persist(user);
+    em.persist(admin);
+    em.persist(both);
+    em.getTransaction().commit();
+    System.out.println("PW: " + user.getUserPass());
+    System.out.println("Testing user with OK password: " + user.verifyPassword("1234"));
+    System.out.println("Testing user with wrong password: " + user.verifyPassword("12345"));
+    System.out.println("Created TEST Users");
+        } finally {
+            em.close();
+        }
+        return "worked";
     }
 }
