@@ -1,7 +1,6 @@
 package rest;
 
 import com.google.gson.Gson;
-import entities.Role;
 import entities.User;
 import java.util.List;
 import javax.annotation.security.RolesAllowed;
@@ -68,5 +67,4 @@ public class DemoResource {
         String thisuser = securityContext.getUserPrincipal().getName();
         return "{\"msg\": \"Hello to (admin) User: " + thisuser + "\"}";
     }
-
 }
