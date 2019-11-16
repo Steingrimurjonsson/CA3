@@ -22,7 +22,7 @@ public class SetupTestUsers {
 
     User user = new User("user", "pass");
     User admin = new User("admin", "pass");
-    User both = new User("user_admin", "password");
+    User both = new User("user_admin", "pass");
 
     if(admin.getUserPass().equals("test")||user.getUserPass().equals("test")||both.getUserPass().equals("test"))
       throw new UnsupportedOperationException("You have not changed the passwords");
